@@ -1,0 +1,28 @@
+{
+  "name": "something",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@mysql/xdevapi": "^8.0.9",
+    "angular4-datepicker": "^1.0.1",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.18.2",
+    "cors": "^2.8.4",
+    "crypto": "^1.0.1",
+    "express": "^4.16.3",
+    "jsonwebtoken": "^8.2.0",
+    "mysql": "^2.15.0",
+    "ngx-flash-messages": "^1.0.4",
+    "nodemailer": "^4.6.3",
+    "nodemon": "^1.17.2",
+    "passport": "^0.4.0",
+    "primeng": "^5.2.3",
+    "twilio": "^3.13.1"
+  }
+}
