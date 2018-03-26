@@ -1,0 +1,119 @@
+<nav class="navbar navbar-inverse">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#nav" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Messaging App</a>
+        </div>
+        <div  class="collapse navbar-collapse" id="nav">
+          <ul class="nav navbar-nav navbar-left">
+            <li *ngIf="!loggedIn()" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a  [routerLink]="['/']">Home</a></li>
+            <li *ngIf="!loggedIn()" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a [routerLink]="['/login']">Login</a></li>
+          </ul>
+
+
+          <ul class="nav navbar-nav navbar-right">
+            
+           
+           
+            
+            <!-- <li *ngIf="!authService.loggedIn()" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a [routerLink]="['/register']">Register</a></li> -->
+            <!-- <li *ngIf="authService.loggedIn()" ><a (click)="logoutUser()" href="#">Logout</a></li> -->
+            <!-- <li *ngIf="authService.loggedIn()"> <a>Welcome, {{user}}</a> -->
+
+              <li *ngIf="loggedIn()" class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Welcome, {{user.username}}<b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                    <li><a  data-toggle="modal"  data-target="#changePassword" ><i class="icon-cog"></i> Change Password</a></li>
+                    <li class="divider"></li>
+                    <li *ngIf="loggedIn()" ><a (click)="logoutUser()" href="#">Logout</a></li>
+                </ul>
+            </li>
+
+          </ul>
+
+
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+
+
+
+    <div class="modal fade" id="changePassword" tabindex="-2" role="dialog" 
+     aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <button type="button" class="close" 
+                   data-dismiss="modal">
+                       <span aria-hidden="true">&times;</span>
+                       <span class="sr-only">Close</span>
+                </button>
+                <h3 class="modal-title" id="changePasswordLabel">
+                   Change Password
+                </h3>
+            </div>
+            
+            <!-- Modal Body -->
+            <div class="modal-body">
+              <form #f="ngForm" novalidate >
+                <div class="form-group">
+                  <label for="">Username</label>
+                  <label type="text" name="username" class="form-control">{{user.username}}</label>
+                  
+                  <!--<pre *ngIf="username.errors" class="margin-20">{{ username.errors | json }}</pre>-->
+                </div>
+                <!-- <div class="form-group">
+                  <label for="">Email</label>
+                  <input type="email" class="form-control" name="email" [ngModel]="user.email" 
+                    required  #email="ngModel" pattern="^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$">
+                  <small [hidden]="email.valid || (email.pristine && !f.submitted)" class="text-danger">
+                    Email is required and format should be <i>john@doe.com</i>.
+                  </small>
+                  <pre *ngIf="email.errors" class="margin-20">{{ email.errors | json }}</pre>
+                </div> -->
+                <div class="form-group">
+                  <label for="">Current Password</label>
+                  <input type="password" class="form-control" name="password1" [(ngModel)]="user.currentpassword" 
+                    required  #password1="ngModel">
+                  <small [hidden]="password1.valid || (password1.pristine && !f.submitted)" class="text-danger">
+                    Password is required
+                  </small>
+                  <!-- <pre *ngIf="password.errors" class="margin-20">{{ password.errors | json }}</pre> -->
+                </div>
+
+
+                <div class="form-group">
+                  <label for="">New Password</label>
+                  <input type="password" class="form-control" name="password" [(ngModel)]="user.newpassword" 
+                    required validateEqual="confirmPassword" reverse="true" #password="ngModel">
+                  <small [hidden]="password.valid || (password.pristine && !f.submitted)" class="text-danger">
+                    Password is required
+                  </small>
+                  <!-- <pre *ngIf="password.errors" class="margin-20">{{ password.errors | json }}</pre> -->
+                </div> 
+
+                <div class="form-group">
+                  <label for="">Retype password</label>
+                  <input type="password" class="form-control" name="confirmPassword" [(ngModel)]="user.confirmPassword" 
+                    required validateEqual="password" reverse="false" #confirmPassword="ngModel">
+                  <small [hidden]="confirmPassword.valid || (confirmPassword.pristine && !f.submitted)" class="text-danger">
+                    Password mismatch
+                  </small>
+                  <!-- <pre *ngIf="confirmPassword.errors" class="margin-20">{{ confirmPassword.errors | json }}</pre> -->
+                </div>
+                <div style="text-align:center" >
+                <button data-dismiss="modal" (click)="changePassword(user, f.valid)" [disabled]="!f.form.valid" type="submit" class="btn btn-primary">Submit</button>
+              </div>
+              </form>
+                
+                
+        </div>
+
+        </div>
+    </div>
+</div>
