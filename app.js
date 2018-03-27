@@ -4,7 +4,7 @@ var bodyParser = require('body-parser');
 var admin_route=require('./admin/routes.js');
 var staff_route=require('./staff/routes.js');
 const jwt=require('jsonwebtoken');
-var connection=require('./databaseConnection/connection');
+//var connection=require('./databaseConnection/connection');
 const model=require('./models/model')
 const path=require('path');
 const cors=require('cors');
@@ -12,7 +12,8 @@ const accountSid = 'AC08b169060aade8d726e982f72a2ba115';
 const authToken = '3a046dc638325ab3d85f6d8d3ab6ef18';
 // // require the Twilio module and create a REST client
 const client = require('twilio')(accountSid, authToken);
-
+var config=require('./config/config')()
+var mysql = require('mysql');
 // client.messages.create(
 //   {
 //     to: '+917018537638',
@@ -26,10 +27,11 @@ const client = require('twilio')(accountSid, authToken);
 //   }
 // );
 
-connection.con.connect(function(err) {
-  if (err) 
-      console.log(err) ;
-});
+console.log(config);
+var pool  = mysql.createPool(
+    config
+);
+
 app.use(cors());
 var allowCrossDomain = function(req, res, next) {
   res.header('Access-Control-Allow-Origin', '*');
