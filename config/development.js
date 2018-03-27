@@ -6,9 +6,9 @@
 //     port:3306
 // };
 module.exports={
-    host : "sql12.freemysqlhosting.net",
-    user :"sql12229033", 
-    password: "w2TuH2wU2a",       
+    host : "ss.ciljehvh059e.us-east-2.rds.amazonaws.com",
+    user :"ss", 
+    password: "sahilsharma",       
     port:'3306',
-    database: "sql12229033"
+    database: "test"
 }
