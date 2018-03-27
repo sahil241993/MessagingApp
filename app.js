@@ -26,12 +26,6 @@ var mysql = require('mysql');
 //     }
 //   }
 // );
-
-console.log(config);
-var pool  = mysql.createPool(
-    config
-);
-
 app.use(cors());
 var allowCrossDomain = function(req, res, next) {
   res.header('Access-Control-Allow-Origin', '*');
