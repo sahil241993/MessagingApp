@@ -1,0 +1,57 @@
+th,td{
+    text-align:center;
+}
+
+
+
+.modal-body .form-horizontal .col-sm-2,
+.modal-body .form-horizontal .col-sm-10 {
+    width: 100%
+}
+
+.modal-body .form-horizontal .control-label {
+    text-align: left;
+}
+.modal-body .form-horizontal .col-sm-offset-2 {
+    margin-left: 15px;
+}
+.alert{
+    padding:0;
+}
+.modal-header{
+    background-color: #aba8a8;
+}
+.modal-body{
+    background-color: #ddd;
+}
+
+
+
+    placeholder { /* Internet Explorer 10-11 */
+    
+       color:    #aaa;
+    
+    }
+    
+   
+    
+    /* Button */
+    
+    input[type=button] {
+    
+       background-color: #00C5BE;
+    
+       border: none;
+    
+       color: #fff;
+    
+       font-size: 1em;
+    
+       padding: 10px 50px;
+    
+       text-transform: uppercase;
+    
+       font-weight: normal;
+    
+    }
+    

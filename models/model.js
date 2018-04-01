@@ -13,11 +13,12 @@ module.exports.addNewPassword=(user,newPassword,callback)=>{
 }
 
 module.exports.addUser=(newUser,callback)=>{
+    console.log(newUser)
     bcrypt.genSalt(10,(err,salt)=>{
         bcrypt.hash(newUser.password,salt,(err,hash)=>{
             if(err)throw err;
                 password=hash;
-            var sql = "insert into staffconnection(username,password)"+ 
+            var sql = "insert into messagingapp.staffconnection(username,password)"+ 
             "values(?,?);"
             connection.con.query(sql,[newUser.username,password],callback);
         })

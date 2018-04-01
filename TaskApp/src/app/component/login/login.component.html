@@ -1,0 +1,52 @@
+<!-- <h2 class="page-header">Login</h2>
+<form (submit)="onLoginSubmit()">
+  <div class="form-group">
+    <label>Username</label>
+    <input type="text"  [(ngModel)]="username" name="username" class="form-control">
+  </div>
+
+  <div class="form-group">
+    <label>Password</label>
+     <input type="password" [(ngModel)]="password" name="password" class="form-control">
+  </div>
+
+  <input type="submit" class="btn btn-primary" value="submit">
+</form> -->
+
+<br><br>
+<div class="col-sm-offset-4 col-sm-4">
+<h2 class="page-header">Login</h2>
+<form (submit)="onLoginSubmit()">
+<div class="form-group">
+  <input id="name" name="name" class="form-control" required 
+  [(ngModel)]="username" #name="ngModel" placeholder="Enter your username" />
+</div>
+
+<div *ngIf="name.invalid && name.dirty"
+     class="alert alert-danger">
+     <span *ngIf="name.hasError('required')">
+      Name is required
+</span>
+</div>
+
+
+<div class="form-group">
+    <input id="password1" type="password" name="password1" class="form-control" required minlength="4" 
+    [(ngModel)]="password" #password1="ngModel" placeholder="Enter your password">
+</div>
+
+<div *ngIf="password1.invalid && (password1.dirty)"
+  class="alert alert-danger">
+
+    <span *ngIf="password1.hasError('required')">
+        password is required.
+</span>
+<span *ngIf="password1.hasError('minlength')">
+    password must be at least 4 characters long.
+</span>
+</div>
+
+  <input type="submit" class="btn btn-primary btn-block" value="submit">
+</form>
+
+</div>

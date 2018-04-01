@@ -167,28 +167,11 @@ console.log(req.body.to_build)
 
 })
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 const port=process.env.PORT || 8080;
 app.use('/admin',admin_route);
 app.use('/staff',staff_route);
 
-
-
-
 app.use(express.static(path.join(__dirname,'public')))
-
 app.get('/',function(req,res){
   res.sendFile(__dirname + "/index.html");
 });

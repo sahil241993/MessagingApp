@@ -1,0 +1,40 @@
+<div class="row">
+  <div class="col-sm-2"> </div>
+    <div class="col-sm-10 col-md-8">
+       
+      <div class="row well">
+          <h3>Upload Section</h3>
+      
+          <div id="fileselector">
+              <input type="file" name="fileUpload" id="fileUpload" ng2FileSelect [uploader]="uploader"/>
+            </div><br>
+        <div>
+          <div class="row uploadList" *ngFor="let item of uploader.queue"> 
+            <div class="col-sm-4">
+                {{item.file.name}}
+              
+            </div>
+            <div class="col-sm-4">
+              <div class="progress">
+                <div class="progress-bar bg-success"
+                [ngStyle]="{'width':item.progress+'%'}">
+                </div>
+
+              </div>
+            </div>
+            <div class="col-sm-4">
+                <button type="button" class="btn btn-dark" (click)="item.upload()">Upload</button>
+                <button type="button" class="btn btn-danger"(click)="item.remove()">Cancel</button>
+            </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="wells">
+            <h3>Uploaded Items</h3>
+            <div class="row uploadList" *ngFor="let item of attatchedList">
+              {{item.originalname}}
+            </div>
+        </div>
+        </div>
+      </div>

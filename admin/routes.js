@@ -5,13 +5,34 @@ const jwt=require('jsonwebtoken');
 var crypto = require("crypto");
 const model=require('../models/model')
 var nodemailer = require('nodemailer');
-// connection.con.connect(function(err) {
-//     if (err) 
-//         throw err;
-//   });
+var multer=require('multer');
 
-var students=[];
-var staff=[];
+var store=multer.diskStorage({
+    destination:(req,file,cb)=>{
+        cb(null,'./upload');
+    },
+    filename:(req,file,cb)=>{
+        cb(null,Date.now()+'.'+file.originalname);
+    }
+});
+
+var upload = multer({storage:store}).single('file');
+
+route.post('/upload',(req,res,next)=>{
+    upload(req,res,(err)=>{
+        if(err){
+            return res.status(501).json({
+                success:false,
+                error:err});
+        }
+        return res.json({  
+            originalname:req.file.originalname,
+            uploadname:req.file.filename
+        })
+    })
+    
+})
+
 route.get('/',verifyToken,(req,res,next)=>{
     var sql = "select * from staff;select * from student";
     connection.con.query(sql, function(err,rows){
@@ -25,10 +46,69 @@ route.get('/',verifyToken,(req,res,next)=>{
                 staff:staff
             }
         )
-    });
-    
+    })    
+});
+
+
+
+route.get('/checkEmail',function(req,res,next){
+    var sql = "select username from staff";
+    connection.con.query(sql, function(err,rows){
+        if(err)
+        return res.json({
+            success:true,
+            msg:err
+        }
+        );
+        localEmails=rows;
+        return res.json({
+            success:true,
+            emails:localEmails
+        }
+        )
+    });   
 })
 
+
+
+
+
+route.post('/mobilefieldchange',function(req,res,next){
+
+    var obj = req.body;
+    var transporter = nodemailer.createTransport({
+        host: 'smtp.gmail.com',
+        port: 465,
+        secure: true,
+        auth: {
+          user: 'sahilmarish@gmail.com',
+          pass: 'SahilSharma'
+        }
+      });
+      
+      var mailOptions = {
+        from: 'sahilmarish@gmail.com',
+        to: 'sahilmarish241993@gmail.com',
+        subject: obj.teacherName+ ' changed the mobile no of ' + obj.studentName,
+        text: 'Hi Admin, \n This is a system generated mail to inform you that teacher with username '+obj.teacherName+
+        " tried to change the mobile no of "+ obj.studentName +' who belongs to class '+obj.studentClass +
+        ' and the changed mobile no is '+obj.studentMobileNo
+      };
+      
+      transporter.sendMail(mailOptions, function(error, info){
+        if (error) {
+          res.json({
+              success:false,
+              msg:err
+          });
+        }
+      });
+    return res.json({
+       success:true,
+       msg:"An Email hasbeen sent to the admin saying you were trying to change the mobile no of "+obj.studentName
+    })
+
+})
 route.get('/students/:class',verifyToken,function(req,res,next){
     var sql = "select * from student s where s.class='"+req.params.class+"'";
     connection.con.query(sql, function(err,rows){
@@ -56,11 +136,11 @@ route.post('/staff',function(req,res,next){
         res.json({success:false, msg:"Insertion failed in staffconnection table this username already exists",obj:err});
         else{ 
         console.log("in else cluse")
-            var sql = "insert into staff(Name,DateOfBirth,PlaceOfBirth,Sex,MobilePhone,Address,Salary,username)"+ 
-            "values(?,?,?,?,?,?,?,?);"
+            var sql = "insert into staff(Name,DateOfBirth,PlaceOfBirth,Sex,MobilePhone,Address,Salary,username,state)"+ 
+            "values(?,?,?,?,?,?,?,?,?);"
             connection.con.query(sql,
                 [req.body.Name,new Date(req.body.DateOfBirth),req.body.PlaceOfBirth,req.body.Sex,req.body.MobilePhone,
-                req.body.Address,req.body.Salary,req.body.username],function(err,result1){
+                req.body.Address,req.body.Salary,req.body.username,req.body.state],function(err,result1){
                     if(err)
                     {
                         connection.con.query("delete from staffconnection where username ='"+req.body.username+"'"
@@ -98,10 +178,10 @@ route.post('/staff',function(req,res,next){
 })
 
 route.post('/student',function(req,res,next){
-    var sql = "insert into student(staffname,Name,DateOfBirth,PlaceOfBirth,Sex,MobilePhone,Address,class)"+
-    "values(?,?,?,?,?,?,?,?);";
+    var sql = "insert into student(staffname,Name,DateOfBirth,PlaceOfBirth,Sex,MobilePhone,Address,class,state)"+
+    "values(?,?,?,?,?,?,?,?,?);";
     connection.con.query(sql,[req.body.StaffName,req.body.Name,new Date(req.body.DateOfBirth),req.body.PlaceOfBirth,req.body.Sex,req.body.MobilePhone,
-        req.body.Address,req.body.class], function(err,result){
+        req.body.Address,req.body.class,req.body.state], function(err,result){
             if(err)return res.json({
                 success:false,
                 msg:"Insertion failed. Check the Teacher is correct",

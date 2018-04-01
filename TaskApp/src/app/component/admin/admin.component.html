@@ -1,0 +1,557 @@
+<div class="row">   
+  <div class="col-md-6">
+  <h2 style="text-align:center">Students Details</h2>
+      <input  *ngIf="student_show" type="text" class ="form-control" [(ngModel)]="searchString" placeholder="Search for names.." 
+        title="Type in a name">
+
+      <br>
+      <h3 style="text-align:center" *ngIf="!student_show">{{validation_msg}}</h3>
+         <table  *ngIf="student_show"class="table  table-striped table-responsive">
+          
+          <thead>
+              <th class="text-center">
+                  <input type="checkbox" name="all" 
+                  [checked]="isAllChecked()" (change)="checkAll($event)"/>
+              </th>
+            <th>Name</th>
+            <!-- <th>Address</th> -->
+            <!-- <th>DateOfBirth</th> -->
+            <th>PlaceOfBirth</th>
+            <th>StaffName</th>
+            <th>class 
+              <select (click)="populateClassDetails()" [(ngModel)]="class_selected">
+                <option></option>
+                <option *ngFor="let i of teacher_classes">{{i}}</option>
+                </select>  
+
+            </th>
+            <th>MobilePhone</th>
+           
+          
+
+          </thead>
+          <tbody >
+            <tr *ngFor="let s of students| filter : searchString | filter : class_selected | paginate: { id: 'first', itemsPerPage: 8, currentPage: p }">
+                <td class="text-center">
+                    <input type="checkbox" 
+                    value="{{s.ID}}" [(ngModel)]="s.state"/>
+                </td>
+             <td> <a href="#" (click)="fun4(s)" data-toggle="modal" data-target="#myModalNorm">{{s.Name}}</a> </td>
+             <td > {{s.PlaceOfBirth}} </td>
+             <td> {{s.StaffName}} </td>
+             <td> {{s.class}} </td>
+             <td > {{s.MobilePhone}} </td>
+              </tr>
+            </tbody>
+           
+        </table>
+        <pagination-controls *ngIf="student_show" id="first" (pageChange)="p = $event"></pagination-controls> 
+       
+        <div   style="text-align:center">
+         
+            <button type="button" data-toggle="modal" data-target="#myModalNorm"(click)="clearCurrentObject()" class="btn  btn-primary">Add Student</button>
+          <button *ngIf="student_show" type="button" data-toggle="modal" data-target="#message"(click)="autoPopulateMessage()" class="btn  btn-primary">Send Message</button>
+      </div>
+</div>
+
+
+
+<div class="col-md-6">
+  <h2 style="text-align:center">Staff Details</h2>
+      <input  *ngIf="staff_show" type="text" class ="form-control" [(ngModel)]="staffString" placeholder="Search for names.." 
+        title="Type in a name"/>
+      <br>
+
+      
+      <h3 style="text-align:center" *ngIf="!staff_show">{{validation_msg_staff}}</h3>
+         <table  *ngIf="staff_show"class="table  table-striped table-responsive">
+          
+          <thead>
+              <th class="text-center">
+                  <input type="checkbox" name="staffAll" 
+                  [checked]="isAllStaffChecked()" (change)="checkStaffAll($event)"/>
+              </th>
+            <th>Name</th>
+            <!-- <th>Address</th> -->
+            <!-- <th>DateOfBirth</th> -->
+            <th>PlaceOfBirth</th>
+            
+            <th>Salary</th>
+            <th>MobilePhone</th>
+           
+          
+
+          </thead>
+          <tbody >
+            <tr *ngFor="let s of staffMembers | staffFilter : staffString | paginate: { id:'second', itemsPerPage: 8, currentPage: p1 }">
+                <td class="text-center">
+                    <input type="checkbox" 
+                    value="{{s.ID}}" [(ngModel)]="s.state"/>
+                </td>
+             <td> <a href="#" (click)="staffMethod(s)" data-toggle="modal" data-target="#staffDetails">{{s.Name}}</a> </td>
+             <td > {{s.PlaceOfBirth}} </td>
+             
+             <td> {{s.Salary}} </td>
+             <td > {{s.MobilePhone}} </td>
+              </tr>
+            </tbody>
+           
+        </table>
+        <pagination-controls  *ngIf="staff_show" id="second" (pageChange)="p1 = $event"></pagination-controls> 
+       
+        <div  style="text-align:center">
+         
+            <button type="button" data-toggle="modal" data-target="#staffDetails"(click)="clearStaffCurrentObject()" class="btn  btn-primary">Add Staff Member</button>
+          <button  *ngIf="staff_show" type="button" data-toggle="modal" data-target="#message"(click)="autoStaffPopulateMessage()" class="btn  btn-primary">Send Message</button>
+      </div>
+</div>
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="myModalNorm" tabindex="-1" role="dialog" 
+   aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" >
+  <div class="modal-dialog" >
+      <div class="modal-content">
+          <!-- Modal Header -->
+          <div class="modal-header">
+              
+              <h4 class="modal-title" id="myModalLabel">
+                {{modelHeadline}} Student Details
+              </h4>
+          </div>
+          
+          <!-- Modal Body -->
+          <div class="modal-body">
+             
+              <form id="studentForm" role="form" #f="ngForm" novalidate>
+                <div class="row">
+                  <div class="col-md-6 col-sm-6">
+                    <div class="form-group">
+                      <label for="exampleInputEmail1">Name</label>
+                        <input type="text" class="form-control"  pattern="[a-zA-Z][a-zA-Z ]*"
+                        [(ngModel)]="student_info.Name" name="name" #name="ngModel" required placeholder="Enter Student Name"/>
+                        <div [hidden]="name.valid || name.pristine"
+                        class="alert alert-danger">
+                        <div [hidden]="!name.hasError('required')">Name is required</div>
+                        <div [hidden]="!name.hasError('pattern')">Only alphabetsallowed</div>
+                     </div>
+                    </div>
+                    
+                   
+                  </div>
+                  
+                  <div class="col-md-6 col-sm-6">
+                    <div class="form-group">
+                      <label for="exampleInputPassword1">Mobile Number</label>
+                        <input type="text" class="form-control"
+                        [(ngModel)]="student_info.MobilePhone" name="mb"   pattern="[0-9]*"
+                        minlength="10"
+                        maxlength="10" 
+                        #studentmobile="ngModel"required  placeholder="Enter Mobile Number"/>
+                        <div [hidden]="studentmobile.valid || studentmobile.pristine"
+                          class="alert alert-danger">
+                          <div [hidden]="!studentmobile.hasError('minlength')">Mobile should be 10digit</div>
+                          <div [hidden]="!studentmobile.hasError('required')">Mobile is required</div>
+                          <div [hidden]="!studentmobile.hasError('pattern')">Mobile numberr should be only numbers</div>
+                       </div>
+                  </div>
+              </div>
+              </div>
+
+              <div class="row">
+                  <div class="col-md-6 col-sm-6">
+                    <div class="form-group">
+                      <label for="exampleInputPassword1">Date Of Birth</label>
+                        <input type="date" class="form-control" [value]="student_info.DateOfBirth"
+                        [(ngModel)]="student_info.DateOfBirth" name="dob"  #dob="ngModel" required   placeholder="Enter Date of birth"/>
+                        
+                        <div [hidden]="dob.valid || dob.pristine" 
+                          class="alert alert-danger">
+                          <div [hidden]="!dob.hasError('required')">Date Of Birth is required {{dob.value}}</div>  
+                       </div>
+                       <div *ngIf="dob.value && futureDateCheck(dob.value)"class="alert alert-danger">
+                       Date Of Birth cannot be a future date  
+                       </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-sm-6">
+                    <div class="form-group">
+                      <label for="exampleInputPassword1">Place Of Birth</label>
+                        <input type="text" class="form-control"
+                        [(ngModel)]="student_info.PlaceOfBirth" name="pob" #pob="ngModel"required pattern="[a-zA-Z][a-zA-Z ]+" placeholder="Enter Place of birth"/>
+
+                        <div [hidden]="pob.valid || pob.pristine"
+                        class="alert alert-danger">
+                        <div [hidden]="!pob.hasError('required')">Place of birth is required</div>
+                        <div [hidden]="!pob.hasError('pattern')">Place of birth should contain only alphabets</div>
+                     </div>
+                    </div>
+                </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 col-sm-6">
+
+                <div class="form-group">
+                  <label for="exampleInputPassword1">Class</label>
+                    <input type="text" class="form-control"
+                    [(ngModel)]="student_info.class" name="class" 
+                    
+                    minlength="2" maxlength="3" required  pattern="[0-9]{1}[0-2]{0,1}[A-Z]{1}" #class="ngModel"
+                      placeholder="Enter the class name with section"/>
+                      {{isTeacherPresent}}
+                      
+                      <div [hidden]="class.valid || class.pristine " 
+                      class="alert alert-danger">
+                      <div [hidden]="!class.hasError('required')">Class is required</div>
+                      <div [hidden]="!class.hasError('pattern')">Class should be in proper format</div>
+                      
+                   </div>
+
+                </div>
+                </div>
+                <div class="col-md-6 col-sm-6">
+                  <div class="form-group">
+                    <label for="exampleInputPassword1">Teacher Username</label>
+                      <input type="email" class="form-control" 
+                      [(ngModel)]="student_info.StaffName" name="teacher_name"  
+                      #tn="ngModel" required  pattern="(([^()[\]\\.,;:\s@\']+(\.[^()[\]\\.,;:\s@\']+)*)|(\'.+\'))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))"  placeholder="Enter Place of birth"/>
+                      <div *ngIf="tn.touched || tn.dirty">
+                        <div  class="alert alert-danger" *ngIf="!isTeacherPresent">Tearcher with this EmailId not present</div>
+                      </div>
+                      <div [hidden]="tn.valid  || tn.pristine"
+                      class="alert alert-danger">
+                      <div [hidden]="!tn.hasError('required')">Teacher Username is required</div>
+                      <div [hidden]="!tn.hasError('pattern')">Teacher Username should be in proper format</div>
+                      
+                    </div>
+                  </div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="exampleInputPassword1">Address</label>
+                    <textarea class="form-control" name="address"  [(ngModel)]="student_info.Address"  #StudentAddress="ngModel" name="address" required placeholder="Enter the address of student"></textarea>
+                    <div [hidden]="StudentAddress.valid || StudentAddress.pristine"
+                    class="alert alert-danger">
+                    <div [hidden]="!StudentAddress.hasError('required')">Student Address is required</div>
+                    </div>
+                
+                </div>
+
+
+               
+
+                <label>Gender</label>
+                <label class="radio-inline">&nbsp;&nbsp;
+                  <input type="radio"  [(ngModel)]="student_info.Sex" required name="gender" value="Male" [attr.checked]="student_info.Sex=='Male'?'checked':null">Male
+                </label>
+                <label class="radio-inline">
+                  <input type="radio" [(ngModel)]="student_info.Sex" required name="gender" value="Female" [attr.checked]="student_info.Sex=='Female'?'checked':null"> Female
+                </label>
+                <!-- <button type="submit" class="btn btn-default">Submit</button> -->
+              
+        
+          <!-- Modal Footer -->
+          <div class="modal-footer">  
+              <button type="button" (click)="f.reset()"  data-dismiss="modal" class="btn btn-default pull-left">
+                  Close
+            </button>
+
+            <button type="button"  (click)="saveMethod(student_info,'student');" data-dismiss="modal"  [disabled]="!f.form.valid || (dob.value && futureDateCheck(dob.value)) || !isTeacherPresent" class="btn btn-primary">
+                {{modelHeadline}}
+            </button>
+            <button *ngIf="!new_flag" type="button" data-dismiss="modal" (click)="deleteMethod(student_info,'student');" [disabled]="!f.form.valid || (dob.value && futureDateCheck(dob.value)) || !isTeacherPresent" class="btn btn-primary">
+               Delete
+            </button>
+
+           
+          </div>
+        </form>            
+      </div>
+      </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="staffDetails" tabindex="-1" role="dialog" data-backdrop="static"
+   aria-labelledby="staffDetailsLabel" aria-hidden="true">
+  <div class="modal-dialog">
+      <div class="modal-content">
+          <!-- Modal Header -->
+          <div class="modal-header">
+             
+              <h4 class="modal-title" id="staffDetailsLabel">
+                {{modelHeadline}} Staff Member Detail
+              </h4>
+          </div>
+          
+          <!-- Modal Body -->
+          <div class="modal-body">
+             
+              <form role="form" #staffForm="ngForm"  novalidate>
+                <div class="row">
+                  <div class="col-md-6 col-sm-6">
+                    <div class="form-group">
+                      <label for="exampleInputEmail1">Name</label>
+                        <input type="text" class="form-control"  pattern="[a-zA-Z][a-zA-Z ]*"
+                        [(ngModel)]="staff_info.Name" name="staff_name" #staffname="ngModel" required placeholder="Enter Teacher Name"/>
+                        <div [hidden]="staffname.valid || staffname.pristine"
+                        class="alert alert-danger">
+                        <div [hidden]="!staffname.hasError('required')">Name is required</div>
+                        <div [hidden]="!staffname.hasError('pattern')">Only alphabetsallowed</div>
+                     </div>
+                    </div>
+                    
+                   
+                  </div>
+                  
+                  <div class="col-md-6 col-sm-6">
+                    <div class="form-group">
+                      <label for="exampleInputPassword1">Mobile Number</label>
+                        <input type="text" class="form-control"
+                        [(ngModel)]="staff_info.MobilePhone" name="staffMobile"   pattern="[0-9]*"
+                        minlength="10"
+                        maxlength="10" 
+                        #staffMobile="ngModel"required  placeholder="Enter Mobile Number"/>
+                        <div [hidden]="staffMobile.valid || staffMobile.pristine"
+                          class="alert alert-danger">
+                          <div [hidden]="!staffMobile.hasError('minlength')">Mobile should be 10digit</div>
+                          <div [hidden]="!staffMobile.hasError('required')">Mobile is required</div>
+                          <div [hidden]="!staffMobile.hasError('pattern')">Mobile numberr should be only numbers</div>
+                       </div>
+                  </div>
+              </div>
+              </div>
+
+              <div class="row">
+                  <div class="col-md-6 col-sm-6">
+                    <div class="form-group">
+                      <label for="exampleInputPassword1">Date Of Birth</label>
+                        <input type="date" class="form-control" [value]="staff_info.DateOfBirth"
+                        [(ngModel)]="staff_info.DateOfBirth" name="staffdob"  #staffdob="ngModel" required   placeholder="Enter Date of birth"/>
+                        
+                        <div [hidden]="staffdob.valid || staffdob.pristine" 
+                          class="alert alert-danger">
+                          <div [hidden]="!staffdob.hasError('required')">Date Of Birth is required {{staffdob.value}}</div>  
+                       </div>
+                       <div *ngIf="staffdob.value && futureDateCheck(staffdob.value)"class="alert alert-danger">
+                       Date Of Birth cannot be a future date  
+                       </div>
+                         
+                       
+  
+                    </div>
+                </div>
+                <div class="col-md-6 col-sm-6">
+                    <div class="form-group">
+                      <label for="exampleInputPassword1">Place Of Birth</label>
+                        <input type="text" class="form-control"
+                        [(ngModel)]="staff_info.PlaceOfBirth" name="staffpob" #staffpob="ngModel"required pattern="[a-zA-Z][a-zA-Z ]+" placeholder="Enter Place of birth"/>
+
+                        <div [hidden]="staffpob.valid || staffpob.pristine"
+                        class="alert alert-danger">
+                        <div [hidden]="!staffpob.hasError('required')">Place of birth is required</div>
+                        <div [hidden]="!staffpob.hasError('pattern')">Place of birth should contain only alphabets</div>
+                     </div>
+                    </div>
+                </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 col-sm-6">
+
+                <div class="form-group">
+                  <label for="exampleInputPassword1">Salary</label>
+                    <input type="text" class="form-control"
+                    [(ngModel)]="staff_info.Salary" name="staffSalary" required  pattern="[0-9]*" #staffSalary="ngModel"
+                      placeholder="Enter the salary"/>
+                      
+                      <div [hidden]="staffSalary.valid || staffSalary.pristine" 
+                      class="alert alert-danger">
+                      <div [hidden]="!staffSalary.hasError('required')">Salary is required</div>
+                      <div [hidden]="!staffSalary.hasError('pattern')">Salary should contain only numbers</div>
+                   </div>
+
+                </div>
+                </div>
+                <div class="col-md-6 col-sm-6">
+                <div *ngIf = "!new_flag" class="form-group">
+                  
+                    <label for="exampleInputPassword1">Username</label>
+                      <label class="form-control">{{staff_info.username}}</label>
+                  </div>
+
+
+                  <div [hidden] = "!new_flag"class="form-group">
+                      <label for="exampleInputPassword1">Username</label>
+                        <input type="text" class="form-control"
+                        [(ngModel)]="staff_info.username" name="username" required  pattern="(([^<>()[\]\\.,;:\s@\']+(\.[^<>()[\]\\.,;:\s@\']+)*)|(\'.+\'))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))"
+                         #tn1="ngModel" placeholder="Enter the username"/>
+                         <div *ngIf="tn1.touched || tn1.dirty">
+                          <div  class="alert alert-danger" *ngIf="isTeacherPresent1">Tearcher with this EmailId is present</div>
+                        </div>
+                          <div [hidden]="tn1.valid || tn1.pristine" 
+                          class="alert alert-danger">
+                          <div [hidden]="!tn1.hasError('required')">Username is required</div>
+                          <div [hidden]="!tn1.hasError('pattern')">Username should be in proper format</div>
+                       </div>
+    
+                  </div>
+
+
+
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="exampleInputPassword1">Address</label>
+                    <textarea class="form-control" name="address"  [(ngModel)]="staff_info.Address" required placeholder="Enter the address of student"></textarea>
+                </div>
+
+
+               
+
+                <label>Gender</label>
+                <label class="radio-inline">&nbsp;&nbsp;
+                  <input type="radio"  [(ngModel)]="staff_info.Sex" required name="gender" value="Male" [attr.checked]="staff_info.Sex=='Male'?'checked':null">Male
+                </label>
+                <label class="radio-inline">
+                  <input type="radio" [(ngModel)]="staff_info.Sex" required name="gender" value="Female" [attr.checked]="staff_info.Sex=='Female'?'checked':null"> Female
+                </label>
+                <!-- <button type="submit" class="btn btn-default">Submit</button> -->
+              
+        
+          <!-- Modal Footer -->
+          <div class="modal-footer">
+
+              <button type="button" (click)="staffForm.reset()"  data-dismiss="modal" class="btn btn-default pull-left">
+                  Close
+            </button>
+
+            <button type="button" data-dismiss="modal" (click)="saveMethod(staff_info,'staff');" [disabled]="!staffForm.form.valid || (staffdob.value && futureDateCheck(staffdob.value)) || isTeacherPresent1" class="btn btn-rounded btn-primary">
+              {{modelHeadline}}
+             </button>
+              
+              <button *ngIf="!new_flag" type="button" data-dismiss="modal" (click)="deleteMethod(staff_info,'staff');" [disabled]="!staffForm.form.valid || (staffdob.value && futureDateCheck(staffdob.value))" class="btn btn-primary">
+                 Delete
+              </button>
+
+
+              
+          </div>
+
+        </form>
+              
+              
+      </div>
+
+      </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="message" tabindex="-2" role="dialog" 
+     aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <button type="button" class="close" 
+                   data-dismiss="modal">
+                       <span aria-hidden="true">&times;</span>
+                       <span class="sr-only">Close</span>
+                </button>
+                <h4 class="modal-title" id="messageLabel">
+                   Send Message
+                </h4>
+            </div>
+            
+            <!-- Modal Body -->
+            <div class="modal-body">
+               
+                <form role="form" #form="ngForm"  novalidate>
+                  
+                   
+                    
+                
+                      <div class="form-group">
+                        <label for="exampleInputPassword1">TO</label>
+                          <input type="text" class="form-control"
+                          [(ngModel)]="message.to" name="to"   pattern="(?:\s*\+91\d{10}\s*(?:,|$))+"
+                          #mobile="ngModel"required  placeholder="Enter Mobile Number"/>
+                          <div [hidden]="mobile.valid || mobile.pristine"
+                            class="alert alert-danger">   
+                            <div [hidden]="!mobile.hasError('required')">Mobile is required</div>
+                            <div [hidden]="!mobile.hasError('pattern')">Mobile numbers should be only numbers</div>
+                         </div>
+                    </div>
+               
+                    <div class="form-group">
+                        <label for="exampleInputPassword1">FROM</label>
+                          <input type="text" class="form-control"
+                          [(ngModel)]="message.from" name="from"   pattern="[a-zA-Z]*"
+                          #from="ngModel"required  placeholder="Enter Mobile Number"/>
+                          <div [hidden]="from.valid || from.pristine"
+                            class="alert alert-danger">   
+                            <div [hidden]="!from.hasError('required')">Teacher Name is required</div>
+                            <div [hidden]="!from.hasError('pattern')">Teacher Name should contain only alphabets</div>
+                         </div>
+                    </div>
+              
+            
+
+                  <div class="form-group">
+                    <label for="exampleInputPassword1">Body </label>
+                      <textarea class="form-control" name="address" rows="5"  [(ngModel)]="message.body" required placeholder="Enter the address of student"></textarea>
+                  </div>
+                
+          
+            <!-- Modal Footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default"
+                        data-dismiss="modal">
+                            Close
+                </button>
+                
+                <button type="button" data-dismiss="modal" (click)="sentMessage();" [disabled]="!form.form.valid " class="btn btn-primary">
+                   Send
+                </button>
+            </div>
+
+          </form>
+                
+                
+        </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+

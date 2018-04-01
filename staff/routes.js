@@ -61,10 +61,10 @@ route.get('/:class',function(req,res,next){
 
 
 route.post('/students',function(req,res,next){
-    var sql = "insert into student(staffname,Name,DateOfBirth,PlaceOfBirth,Sex,MobilePhone,Address,class)"+
-    "values(?,?,?,?,?,?,?,?);";
+    var sql = "insert into student(staffname,Name,DateOfBirth,PlaceOfBirth,Sex,MobilePhone,Address,class,state)"+
+    "values(?,?,?,?,?,?,?,?,?);";
     connection.con.query(sql,[req.body.staffname,req.body.Name,new Date(req.body.DateOfBirth),req.body.PlaceOfBirth,req.body.Sex,req.body.MobilePhone,
-        req.body.Address,req.body.class], function(err,result){
+        req.body.Address,req.body.class,req.body.state], function(err,result){
             if(err)return res.json({
                 msg:"Insertion failed",
                 obj:err

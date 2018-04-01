@@ -1,7 +1,13 @@
 module.exports={
-    host : "ec2-18-188-30-105.us-east-2.compute.amazonaws.com",
-    user :"sahil", 
-    password: "Sahil224719",       
+	
+    connectionLimit : 100,
+    connectTimeout  : 60 * 60 * 1000,
+    aquireTimeout   : 60 * 60 * 1000,
+    timeout         : 60 * 60 * 1000,
+    host : "ss.ciljehvh059e.us-east-2.rds.amazonaws.com",
+    user :"ss", 
+    password: "sahilsharma",       
     port:'3306',
-    database: "messaginApp"
+    database: "test"
+
 }
