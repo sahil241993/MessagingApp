@@ -5,7 +5,8 @@
 
 <div>
   <!-- <a class="btn btn-primary" [routerLink]="['/register']">Register</a> -->
-  <a class="btn btn-primary" [routerLink]="['/login']">Login</a>
+  <a class="btn btn-primary" [routerLink]="['/login']" [queryParams]="{ name: 'Admin' }">Login As Admin</a>
+  <a class="btn btn-primary" [routerLink]="['/login']" [queryParams]="{ name: 'Staff' }">Login As Staff</a>
 </div>
 
 </div>

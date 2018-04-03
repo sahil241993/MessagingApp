@@ -6,6 +6,8 @@ var crypto = require("crypto");
 const model=require('../models/model')
 var nodemailer = require('nodemailer');
 var multer=require('multer');
+var path=require('path')
+var csvtojson= require('csvtojson')
 
 var store=multer.diskStorage({
     destination:(req,file,cb)=>{
@@ -16,22 +18,57 @@ var store=multer.diskStorage({
     }
 });
 
+
+
+
+
+
 var upload = multer({storage:store}).single('file');
 
 route.post('/upload',(req,res,next)=>{
+    var jsonArray=[];
     upload(req,res,(err)=>{
         if(err){
             return res.status(501).json({
                 success:false,
                 error:err});
         }
+        console.log(path.resolve(__dirname, '../upload/'+ req.file.filename))
+        csvtojson({}).fromFile(path.resolve(__dirname, '../upload/'+ req.file.filename))
+        .on('json',(jsonObj)=>{
+         jsonArray.push(jsonObj);        
+         })
+        .on('done',(error)=>{
+        console.log('end')
+        jsonArray.forEach(element=>{
+            saveStudents(element)
+        })
+        })
+
         return res.json({  
             originalname:req.file.originalname,
             uploadname:req.file.filename
         })
     })
-    
+
+   
 })
+
+
+function saveStudents(req){
+    console.log(new Date(req.DateOfBirth))
+    var sql = "insert into student(staffname,Name,DateOfBirth,PlaceOfBirth,Sex,MobilePhone,Address,class,state)"+
+    "values(?,?,?,?,?,?,?,?,?);";
+    connection.con.query(sql,[req.StaffName,req.Name,new Date(req.DateOfBirth),req.PlaceOfBirth,req.Sex,req.MobilePhone,
+        req.Address,req.class,req.state], function(err,result){
+            if(err){
+                console.log(err)
+            }
+            console.log("success");
+    });   
+
+}
+
 
 route.get('/',verifyToken,(req,res,next)=>{
     var sql = "select * from staff;select * from student";
@@ -71,7 +108,14 @@ route.get('/checkEmail',function(req,res,next){
 
 
 
-
+route.post('/download',(req,res,next)=>{
+    console.log(__dirname)
+    var name=req.body.name;
+    // filepath=path.join(__dirname, '/../admin/download.csv')
+    var filepath= path.resolve(__dirname, '../download/'+ name+'.csv')
+    console.log(filepath)
+    res.sendFile(filepath);
+})
 
 route.post('/mobilefieldchange',function(req,res,next){
 
@@ -199,6 +243,7 @@ route.post('/student',function(req,res,next){
 
     });   
 })
+
 
 route.put('/staff',function(req,res,next){
     var obj=req.body;

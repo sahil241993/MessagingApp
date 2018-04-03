@@ -39,7 +39,7 @@ loggedIn(){
 
 logoutUser(){
   this.loginService.logoutUser();
-    this.router.navigate(['/login']);
+    this.router.navigate(['/']);
   return false;   
 }
 

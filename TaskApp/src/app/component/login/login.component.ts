@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {AuthService} from '../../services/auth.service'
-import {Router} from '@angular/router'
+import {Router,ActivatedRoute} from '@angular/router'
 import { FormsModule,ReactiveFormsModule} from '@angular/forms';
 import { FlashMessagesService } from 'ngx-flash-messages';
 import {LoginService} from '../../services/login.service'
@@ -13,16 +13,26 @@ export class LoginComponent implements OnInit {
 
   username:String;
   password:String;
+  currentLoginUser:String;
 
 
   constructor(
     private authService:AuthService,
     private router:Router,
     private flashMessagesService:FlashMessagesService,
-    private loginService : LoginService
-  ) { }
+    private loginService : LoginService,
+    private activatedRoute:ActivatedRoute
+  ) {
+    
+
+   }
 
   ngOnInit() {
+    this.activatedRoute.queryParams.subscribe(params => {
+     
+      console.log(params); // Print the parameter to the console. 
+      this.currentLoginUser=params['name'];
+  });
     console.log('in login')
     if(this.loginService.loggedIn()){
      
@@ -36,12 +46,12 @@ export class LoginComponent implements OnInit {
     else{
       console.log('djfdsfjldjlfjdlksjalkjlk hello')
       this.loginService.logoutUser()
-      this.router.navigate(['/login'])
+      this.router.navigate(['/login'],{ queryParams: { name: this.currentLoginUser } });
     }
     }
     else{
       this.loginService.logoutUser()
-      this.router.navigate(['/login'])
+      this.router.navigate(['/login'],{ queryParams: { name: this.currentLoginUser } });
     }
     
   }

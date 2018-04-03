@@ -5,6 +5,8 @@ import 'rxjs/add/operator/map'
 import 'rxjs/add/operator/catch'
 import {ResponseContentType,RequestOptions} from '@angular/http'
 import { Student_info } from 'app/interfaces/all_interface';
+
+
 @Injectable()
 export class AuthService {
 
@@ -30,6 +32,20 @@ export class AuthService {
   return this.http.post('http://localhost:8080/sendMessage',messageObj).map(
     (res)=>{
       return res.json();
+    }
+  )
+}
+
+download(Obj){
+  let headers: any = new Headers();
+    headers.append('Content-Type', 'application/json');
+  return this.http.post('http://localhost:8080/admin/download',{name:Obj},
+  {
+    responseType:ResponseContentType.Blob,
+    headers:headers
+  }).map(
+    (res)=>{
+      return res;
     }
   )
 }
